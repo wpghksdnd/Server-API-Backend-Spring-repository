@@ -1,18 +1,20 @@
-spring: 
+server:
+  port: ${SERVER_PORT:8080}
 
+spring:
   application:
     name: spring
 
   datasource:
-    url: jdbc:mysql://localhost:3310/koreanit_service?serverTimezone=Asia/Seoul&characterEncoding=utf8
-    username: koreanit_app
-    password: password
+    url: ${DB_URL:jdbc:mysql://localhost:3310/koreanit_service?serverTimezone=Asia/Seoul&characterEncoding=utf8}
+    username: ${DB_USER:koreanit_app}
+    password: ${DB_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
     redis:
-      host: 127.0.0.1
-      port: 6379
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
 
   session:
     store-type: redis

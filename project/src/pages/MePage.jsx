@@ -1,36 +1,24 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { api } from '../api'
+import { useState } from 'react'
+import { api, notifyAuthChanged } from '../api'
 import Seo from '../components/Seo'
+import { useAuth } from '../auth'
 
 export default function MePage() {
-  const [me, setMe] = useState(null)
   const [msg, setMsg] = useState('')
-  const [authed, setAuthed] = useState(false)
-
-  useEffect(() => {
-    api.me().then((r) => {
-      if (r.ok) {
-        setAuthed(true)
-        setMe(r?.data?.data || null)
-        setMsg('조회 성공')
-      } else {
-        setAuthed(false)
-        setMe(null)
-        setMsg('')
-      }
-    })
-  }, [])
+  const [busy, setBusy] = useState(false)
+  const { user, authed, refreshAuth } = useAuth()
 
   const logout = async () => {
+    setBusy(true)
     const r = await api.logout()
     if (r.ok) {
-      setAuthed(false)
-      setMe(null)
+      notifyAuthChanged()
+      await refreshAuth()
       setMsg('로그아웃 완료')
     } else {
       setMsg(`로그아웃 실패 (${r.status})`)
     }
+    setBusy(false)
   }
 
   return (
@@ -39,14 +27,11 @@ export default function MePage() {
       <h1>내 정보</h1>
 
       {!authed ? (
-        <div>
-          <p className="muted">로그인 상태가 아닙니다.</p>
-          <Link to="/login" className="button">로그인</Link>
-        </div>
+        <p className="muted">세션이 만료되었습니다. 다시 로그인해 주세요.</p>
       ) : (
         <>
-          <pre>{JSON.stringify(me, null, 2)}</pre>
-          <button className="button danger" onClick={logout}>로그아웃</button>
+          <pre>{JSON.stringify(user, null, 2)}</pre>
+          <button className="button danger" onClick={logout} disabled={busy}>{busy ? '처리 중...' : '로그아웃'}</button>
         </>
       )}
 

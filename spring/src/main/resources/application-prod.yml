@@ -1,8 +1,7 @@
 server:
-  port: ${PORT}
+  port: ${PORT:8080}
 
 spring:
-
   application:
     name: spring
 
@@ -14,8 +13,8 @@ spring:
 
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
 
   session:
     store-type: redis

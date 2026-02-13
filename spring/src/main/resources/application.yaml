@@ -2,7 +2,7 @@ spring:
   forward-headers-strategy: framework
 
   profiles:
-    default: dev
+    default: ${SPRING_PROFILES_DEFAULT:dev}
 
 logging:
   level:

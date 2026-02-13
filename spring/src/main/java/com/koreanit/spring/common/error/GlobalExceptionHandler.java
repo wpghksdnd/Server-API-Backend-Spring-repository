@@ -17,7 +17,6 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.koreanit.spring.common.response.ApiResponse;
 
-//범위 @RestController, @Controller, @Service, @Repository 모두 포함된다.
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -28,7 +27,6 @@ public class GlobalExceptionHandler {
         if (trace == null || trace.length == 0)
             return "unknown";
 
-        // 우리 코드 위치를 우선으로 찍는다
         for (StackTraceElement el : trace) {
             if (el.getClassName().startsWith("com.koreanit.")) {
                 return el.getClassName() + ":" + el.getLineNumber();
@@ -42,111 +40,68 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ApiResponse<Void>> handleApiException(ApiException e) {
         ErrorCode code = e.getErrorCode();
-
-        log.warn("[API_ERROR] code={} message=\"{}\" origin={}",
-                code.name(), e.getMessage(), origin(e));
-
-        return ResponseEntity
-                .status(code.getStatus())
-                .body(ApiResponse.fail(code.name(), e.getMessage()));
+        log.warn("[API_ERROR] code={} message=\"{}\" origin={}", code.name(), e.getMessage(), origin(e));
+        return ResponseEntity.status(code.getStatus()).body(ApiResponse.fail(code.name(), e.getMessage()));
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
-    public String handleDuplicateKey(DuplicateKeyException e) {
-        // log.warn("[DUPLICATE_KEY] message=\"{}\" origin={}",
-        // "중복된 값으로 인해 저장할 수 없습니다", origin(e));
-
-        // return ResponseEntity
-        // .status(ErrorCode.DUPLICATE_RESOURCE.getStatus())
-        // .body(ApiResponse.fail(
-        // ErrorCode.DUPLICATE_RESOURCE.name(),
-        // "중복된 값으로 인해 저장할 수 없습니다."));
-        String m = (e.getMessage() == null) ? "" : e.getMessage();
-
-        // MySQL 기준: "Duplicate entry ... for key '...'"
-        // DB/드라이버에 따라 메시지 포맷은 달라질 수 있으므로
-        // key 이름 기반으로만 판단한다.
-        if (m.contains("for key")
-                && (m.contains("users.username") || m.contains("'username'") || m.contains("username"))) {
-            return "이미 존재하는 username입니다";
-        }
-        if (m.contains("for key") && (m.contains("users.email") || m.contains("'email'") || m.contains("email"))) {
-            return "이미 존재하는 email입니다";
-        }
-
-        return "이미 존재하는 값입니다";
+    public ResponseEntity<ApiResponse<Void>> handleDuplicateKey(DuplicateKeyException e) {
+        log.warn("[DUPLICATE_KEY] origin={} message={}", origin(e), e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.DUPLICATE_RESOURCE.getStatus())
+                .body(ApiResponse.fail(ErrorCode.DUPLICATE_RESOURCE.name(), "이미 존재하는 값입니다."));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse<Void>> handleBodyMissing(HttpMessageNotReadableException e) {
         log.warn("[INVALID_BODY] origin={}", origin(e));
-
         return ResponseEntity
                 .status(ErrorCode.INVALID_REQUEST.getStatus())
-                .body(ApiResponse.fail(
-                        ErrorCode.INVALID_REQUEST.name(),
-                        "요청 바디가 비어 있거나 형식이 올바르지 않습니다"));
+                .body(ApiResponse.fail(ErrorCode.INVALID_REQUEST.name(), "요청 바디가 비어 있거나 형식이 올바르지 않습니다"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException e) {
         FieldError error = e.getBindingResult().getFieldError();
-
         String message = (error != null && error.getDefaultMessage() != null && !error.getDefaultMessage().isBlank())
                 ? error.getDefaultMessage()
                 : "요청 값이 올바르지 않습니다";
 
         log.warn("[VALIDATION_FAIL] message=\"{}\" origin={}", message, origin(e));
-
         return ResponseEntity
-                .status(ErrorCode.INVALID_REQUEST.getStatus()) // 응답 상태코드
-                .body(ApiResponse.fail(ErrorCode.INVALID_REQUEST.name(), message)); // 응답 바디
+                .status(ErrorCode.INVALID_REQUEST.getStatus())
+                .body(ApiResponse.fail(ErrorCode.INVALID_REQUEST.name(), message));
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleNoResource(NoResourceFoundException e) {
-        log.warn("[NoResource] origin={}", origin(e));
-
+        log.warn("[NO_RESOURCE] origin={}", origin(e));
         return ResponseEntity
                 .status(ErrorCode.NOT_FOUND_RESOURCE.getStatus())
-                .body(ApiResponse.fail(
-                        ErrorCode.NOT_FOUND_RESOURCE.name(),
-                        "리소스를 찾을 수 없습니다."));
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
-        // 5xx만 스택트레이스 출력
-        log.error("[INTERNAL_ERROR] origin={}", origin(e), e);
-
-        return ResponseEntity
-                .status(ErrorCode.INTERNAL_ERROR.getStatus())
-                .body(ApiResponse.fail(ErrorCode.INTERNAL_ERROR.name(), "서버 오류"));
+                .body(ApiResponse.fail(ErrorCode.NOT_FOUND_RESOURCE.name(), "리소스를 찾을 수 없습니다."));
     }
 
     @ExceptionHandler({ AuthorizationDeniedException.class, AccessDeniedException.class })
     public ResponseEntity<ApiResponse<Void>> handleForbidden(Exception e) {
-
-        log.warn("[{}] message=\"{}\" origin={}", e.getClass().getName(),
-                e.getMessage(), origin(e));
-
+        log.warn("[FORBIDDEN] message=\"{}\" origin={}", e.getMessage(), origin(e));
         return ResponseEntity
                 .status(ErrorCode.FORBIDDEN.getStatus())
-                .body(ApiResponse.fail(
-                        ErrorCode.FORBIDDEN.name(),
-                        "권한이 없습니다"));
+                .body(ApiResponse.fail(ErrorCode.FORBIDDEN.name(), "권한이 없습니다"));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ApiResponse<Void>> violation (Exception e) {
+    public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        log.warn("[DATA_INTEGRITY] origin={} message={}", origin(e), e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.INVALID_REQUEST.getStatus())
+                .body(ApiResponse.fail(ErrorCode.INVALID_REQUEST.name(), "요청 데이터가 제약조건을 위반했습니다."));
+    }
 
-        log.warn("[{}] message=\"{}\" origin={}", e.getClass().getName(),
-                e.getMessage(), origin(e));
-
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
+        log.error("[INTERNAL_ERROR] origin={}", origin(e), e);
         return ResponseEntity
                 .status(ErrorCode.INTERNAL_ERROR.getStatus())
-                .body(ApiResponse.fail(
-                        ErrorCode.INTERNAL_ERROR.name(),
-                        "Data too long"));
+                .body(ApiResponse.fail(ErrorCode.INTERNAL_ERROR.name(), "서버 내부 오류가 발생했습니다."));
     }
 }

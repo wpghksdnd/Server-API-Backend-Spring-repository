@@ -38,21 +38,15 @@ public class UserService {
         return currentUserId != null && userId != null && currentUserId.equals(userId);
     }
 
-    public Long create(String username, String nickname, String email, String password) {// db랑 타입 맞추기 rowMapper에서
+    public Long create(String username, String nickname, String email, String password) {
         username = username.trim().toLowerCase();
         nickname = nickname.trim().toLowerCase();
-        email = email.trim().toLowerCase();
-
-        // String normalizedEmail = (email == null) ? null : email.toLowerCase();
+        String normalizedEmail = (email == null || email.isBlank()) ? null : email.trim().toLowerCase();
 
         String hash = passwordEncoder.encode(password);
 
         try {
-            return userRepository.save(
-                    username,
-                    hash,
-                    nickname,
-                    (email == null) ? null : email.toLowerCase());
+            return userRepository.save(username, hash, nickname, normalizedEmail);
         } catch (DuplicateKeyException e) {
             throw new ApiException(ErrorCode.DUPLICATE_RESOURCE, "이미 존재하는 username 또는 nickname 또는 email 입니다.");
         }
@@ -151,12 +145,11 @@ public class UserService {
         try {
             UserEntity en = userRepository.findByUsername(username);
             if (!passwordEncoder.matches(password, en.getPassword())) {
-                throw new ApiException(ErrorCode.INTERNAL_ERROR, "비밀번호가 잘못되었습니다.");
+                throw new ApiException(ErrorCode.UNAUTHORIZED, "아이디 또는 비밀번호가 올바르지 않습니다.");
             }
-
             return en.getId();
         } catch (EmptyResultDataAccessException e) {
-            throw new ApiException(ErrorCode.NOT_FOUND_RESOURCE, "존재하지 않는 사용자입니다. username=" + username);
+            throw new ApiException(ErrorCode.UNAUTHORIZED, "아이디 또는 비밀번호가 올바르지 않습니다.");
         }
     }
 }

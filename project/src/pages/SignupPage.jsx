@@ -8,6 +8,7 @@ export default function SignupPage() {
   const [showPw, setShowPw] = useState(false)
   const [msg, setMsg] = useState('')
   const [errors, setErrors] = useState({})
+  const [submitting, setSubmitting] = useState(false)
   const nav = useNavigate()
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
@@ -24,15 +25,19 @@ export default function SignupPage() {
 
   const submit = async () => {
     if (!validate()) return
+    setSubmitting(true)
     const r = await api.signup(form)
     if (r.ok) {
       setMsg('회원가입 성공! 로그인 페이지로 이동합니다.')
       setTimeout(() => nav('/login'), 600)
     } else if (r.status === 409) {
       setMsg('이미 사용 중인 계정 정보가 있습니다.')
+    } else if (r.status === 400) {
+      setMsg('입력값을 다시 확인해 주세요.')
     } else {
       setMsg(`회원가입 실패 (${r.status})`)
     }
+    setSubmitting(false)
   }
 
   const pwStrength = useMemo(() => {
@@ -63,7 +68,7 @@ export default function SignupPage() {
       </div>
       <p className="muted" style={{ marginTop: 6 }}>비밀번호 강도: {pwStrength}</p>
       {errors.password && <p style={{ color: '#b91c1c', marginTop: -6 }}>{errors.password}</p>}
-      <button className="button" onClick={submit}>가입하기</button>
+      <button className="button" onClick={submit} disabled={submitting}>{submitting ? '가입 처리 중...' : '가입하기'}</button>
       <p className="muted">{msg}</p>
     </section>
   )

@@ -12,7 +12,11 @@ import com.koreanit.spring.user.UserService;
 import com.koreanit.spring.user.dto.request.UserLoginRequest;
 import com.koreanit.spring.user.dto.response.UserResponse;
 
+import com.koreanit.spring.common.error.ApiException;
+import com.koreanit.spring.common.error.ErrorCode;
+
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -27,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<Long> login(@RequestBody UserLoginRequest req, HttpSession session) {
+    public ApiResponse<Long> login(@Valid @RequestBody UserLoginRequest req, HttpSession session) {
       Long userId = userService.login(req.getUsername(), req.getPassword());
       session.setAttribute(SESSION_USER_ID, userId);
       return ApiResponse.ok(userId);
@@ -42,6 +46,9 @@ public class AuthController {
     @GetMapping("/me")
     public ApiResponse<UserResponse> me(HttpSession session) {
         Long userId = (Long) session.getAttribute(SESSION_USER_ID);
+        if (userId == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED, "로그인이 필요합니다");
+        }
         return ApiResponse.ok(UserMapper.toResponse(userService.get(userId)));
     }
 }

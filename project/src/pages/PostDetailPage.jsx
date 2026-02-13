@@ -5,6 +5,7 @@ import Seo from '../components/Seo'
 import LoadingState from '../components/LoadingState'
 import ErrorState from '../components/ErrorState'
 import Toast from '../components/Toast'
+import EmptyState from '../components/EmptyState'
 
 export default function PostDetailPage() {
   const { id } = useParams()
@@ -86,7 +87,11 @@ export default function PostDetailPage() {
       setMsg('댓글 등록 완료')
       setCommentInput('')
       load()
-    } else setMsg(`댓글 등록 실패 (${r.status}) - 로그인 필요`)
+    } else if (r.status === 401) {
+      setMsg('세션이 만료되었습니다. 다시 로그인해 주세요.')
+    } else {
+      setMsg(`댓글 등록 실패 (${r.status})`)
+    }
   }
 
   const submitReply = async () => {
@@ -97,19 +102,23 @@ export default function PostDetailPage() {
       setReplyInput('')
       setReplyTarget(null)
       load()
-    } else setMsg(`대댓글 등록 실패 (${r.status}) - 로그인 필요`)
+    } else if (r.status === 401) {
+      setMsg('세션이 만료되었습니다. 다시 로그인해 주세요.')
+    } else {
+      setMsg(`대댓글 등록 실패 (${r.status})`)
+    }
   }
 
   const toggleLike = async () => {
     const r = engagement.liked ? await api.unlikePost(id) : await api.likePost(id)
-    if (!r.ok) return setMsg(`좋아요 처리 실패 (${r.status})`)
+    if (!r.ok) return setMsg(r.status === 401 ? '세션이 만료되었습니다. 다시 로그인해 주세요.' : `좋아요 처리 실패 (${r.status})`)
     showToast('좋아요 상태가 변경되었습니다.')
     load()
   }
 
   const toggleBookmark = async () => {
     const r = engagement.bookmarked ? await api.unbookmarkPost(id) : await api.bookmarkPost(id)
-    if (!r.ok) return setMsg(`북마크 처리 실패 (${r.status})`)
+    if (!r.ok) return setMsg(r.status === 401 ? '세션이 만료되었습니다. 다시 로그인해 주세요.' : `북마크 처리 실패 (${r.status})`)
     showToast('북마크 상태가 변경되었습니다.')
     load()
   }
@@ -179,7 +188,7 @@ export default function PostDetailPage() {
               <p className="muted">{msg}</p>
             </div>
 
-            {rootComments.length === 0 ? <p className="muted">댓글이 없습니다.</p> : rootComments.map((c) => (
+            {rootComments.length === 0 ? <EmptyState title="댓글이 없습니다." description="첫 댓글을 남겨보세요." /> : rootComments.map((c) => (
               <div key={c.id} style={{ padding: '10px 0', borderTop: '1px solid #e4e8ca' }}>
                 <p style={{ margin: '0 0 6px' }}>• {c.content}</p>
                 <button className="button btn-sm secondary" onClick={() => setReplyTarget(c.id)}>답글</button>

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Link, NavLink, Navigate, Route, Routes } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, NavLink, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import PostsPage from './pages/PostsPage'
 import PostDetailPage from './pages/PostDetailPage'
@@ -22,28 +22,11 @@ import NotificationBell from './components/NotificationBell'
 import UserMenu from './components/UserMenu'
 import ThemeToggle from './components/ThemeToggle'
 import BackToTop from './components/BackToTop'
-import { api } from './api'
-
-function AdminRoute({ isAdmin, children }) {
-  if (!isAdmin) return <Navigate to="/" replace />
-  return children
-}
+import { AdminRoute, AuthProvider, ProtectedRoute, useAuth } from './auth'
 
 function Layout({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [user, setUser] = useState(null)
-  const [isAdmin, setIsAdmin] = useState(false)
-
-  const loadAuth = async () => {
-    const meR = await api.me()
-    setUser(meR.ok ? meR?.data?.data : null)
-    const adminR = await api.adminMe()
-    setIsAdmin(adminR.ok)
-  }
-
-  useEffect(() => { loadAuth() }, [])
-
-  const authed = !!user
+  const { user, isAdmin, authed } = useAuth()
 
   return (
     <div className="app-shell">
@@ -87,13 +70,7 @@ function Layout({ children }) {
   )
 }
 
-export default function App() {
-  const [isAdmin, setIsAdmin] = useState(false)
-
-  useEffect(() => {
-    api.adminMe().then((r) => setIsAdmin(r.ok))
-  }, [])
-
+function AppRoutes() {
   return (
     <Layout>
       <Routes>
@@ -102,20 +79,28 @@ export default function App() {
         <Route path="/post/:id" element={<PostDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/write" element={<WritePage />} />
-        <Route path="/me" element={<MePage />} />
-        <Route path="/my-bookmarks" element={<MyBookmarksPage />} />
-        <Route path="/my-activity" element={<MyActivityPage />} />
-        <Route path="/my-posts" element={<MyPostsPage />} />
+        <Route path="/write" element={<ProtectedRoute><WritePage /></ProtectedRoute>} />
+        <Route path="/me" element={<ProtectedRoute><MePage /></ProtectedRoute>} />
+        <Route path="/my-bookmarks" element={<ProtectedRoute><MyBookmarksPage /></ProtectedRoute>} />
+        <Route path="/my-activity" element={<ProtectedRoute><MyActivityPage /></ProtectedRoute>} />
+        <Route path="/my-posts" element={<ProtectedRoute><MyPostsPage /></ProtectedRoute>} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/contact" element={<ContactPage />} />
 
-        <Route path="/admin" element={<AdminRoute isAdmin={isAdmin}><AdminHomePage /></AdminRoute>} />
-        <Route path="/ops-health" element={<AdminRoute isAdmin={isAdmin}><OpsHealthPage /></AdminRoute>} />
-        <Route path="/ads-admin" element={<AdminRoute isAdmin={isAdmin}><AdsAdminPage /></AdminRoute>} />
+        <Route path="/admin" element={<AdminRoute><AdminHomePage /></AdminRoute>} />
+        <Route path="/ops-health" element={<AdminRoute><OpsHealthPage /></AdminRoute>} />
+        <Route path="/ads-admin" element={<AdminRoute><AdsAdminPage /></AdminRoute>} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Layout>
+  )
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   )
 }

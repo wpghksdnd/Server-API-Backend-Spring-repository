@@ -1,11 +1,22 @@
 const API_BASE = '/api'
 
+function emitAuthEvent(name) {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(name))
+  }
+}
+
 async function request(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
     credentials: 'include',
     headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
     ...options,
   })
+
+  if (res.status === 401 && path !== '/login') {
+    emitAuthEvent('auth:expired')
+  }
+
   const text = await res.text()
   let data
   try {
@@ -54,4 +65,8 @@ export const api = {
   signup: (payload) => request('/users', { method: 'POST', body: JSON.stringify(payload) }),
 
   createPost: (payload) => request('/posts', { method: 'POST', body: JSON.stringify(payload) }),
+}
+
+export function notifyAuthChanged() {
+  emitAuthEvent('auth:changed')
 }

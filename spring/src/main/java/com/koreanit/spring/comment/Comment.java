@@ -2,7 +2,6 @@ package com.koreanit.spring.comment;
 
 import java.time.LocalDateTime;
 
-
 public class Comment {
 
     private final long id;
