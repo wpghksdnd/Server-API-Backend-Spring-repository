@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>게시글 상세 | Koreanit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="/assets/css/app.css" />
+</head>
+<body class="text-slate-800">
+  <div id="app" class="min-h-screen">
+    <header class="sticky top-0 z-30 border-b border-slate-200 glass">
+      <div class="page-wrap mx-auto px-4 h-16 flex items-center justify-between">
+        <a href="/posts.html" class="font-semibold text-indigo-700">← 게시글 목록</a>
+        <a href="/" class="text-sm text-slate-600">홈</a>
+      </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 py-8 space-y-4">
+      <article class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        <h1 class="text-2xl font-bold">{{ post?.title || '로딩 중...' }}</h1>
+        <p class="text-xs text-slate-500 mt-1">글 ID: {{ post?.id }}</p>
+        <p class="mt-4 whitespace-pre-wrap text-slate-700">{{ post?.content }}</p>
+      </article>
+
+      <section class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        <h2 class="font-semibold text-lg mb-3">댓글</h2>
+        <div v-if="!comments.length" class="text-slate-500 text-sm">댓글이 없습니다.</div>
+        <div v-for="c in comments" :key="c.id" class="py-3 border-b last:border-b-0">
+          <p class="text-slate-700">{{ c.content }}</p>
+          <p class="text-xs text-slate-500 mt-1">댓글 ID: {{ c.id }}</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/post.js"></script>
+</body>
+</html>

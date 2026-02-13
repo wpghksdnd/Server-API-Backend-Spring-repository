@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 정보 | Koreanit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="/assets/css/app.css" />
+</head>
+<body class="text-slate-800">
+  <div id="app" class="min-h-screen">
+    <header class="sticky top-0 z-30 border-b border-slate-200 glass">
+      <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+        <a href="/" class="font-bold">Koreanit</a>
+        <button @click="logout" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-sm hover:bg-black">로그아웃</button>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-4 md:p-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        <h1 class="text-2xl font-bold mb-4">내 정보</h1>
+        <pre class="bg-slate-900 text-slate-100 rounded-xl p-4 text-sm overflow-auto">{{ JSON.stringify(me, null, 2) }}</pre>
+        <p class="text-sm text-slate-600 mt-3">{{ msg }}</p>
+      </div>
+    </main>
+  </div>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/me.js"></script>
+</body>
+</html>

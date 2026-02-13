@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로그인 | Koreanit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="/assets/css/app.css" />
+</head>
+<body class="text-slate-800">
+  <div id="app" class="min-h-screen grid place-items-center px-4">
+    <div class="w-full max-w-md bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+      <div class="flex items-center gap-3 mb-4">
+        <img src="/assets/logo-koreanit.svg" class="w-9 h-9 rounded-xl" alt="logo" />
+        <div>
+          <h1 class="text-2xl font-bold">로그인</h1>
+          <p class="text-sm text-slate-500">Koreanit Community</p>
+        </div>
+      </div>
+      <div class="space-y-3">
+        <input v-model="username" class="w-full border rounded-xl px-3 py-2" placeholder="username" />
+        <input v-model="password" type="password" class="w-full border rounded-xl px-3 py-2" placeholder="password" />
+        <button @click="login" class="w-full px-3 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">로그인</button>
+        <p class="text-sm text-slate-600">{{ msg }}</p>
+        <a href="/" class="text-sm text-indigo-700">홈으로</a>
+      </div>
+    </div>
+  </div>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/login.js"></script>
+</body>
+</html>

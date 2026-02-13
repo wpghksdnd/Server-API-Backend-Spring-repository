@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>글쓰기 | Koreanit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="/assets/css/app.css" />
+</head>
+<body class="text-slate-800">
+  <div id="app" class="min-h-screen">
+    <header class="sticky top-0 z-30 border-b border-slate-200 glass">
+      <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+        <a href="/posts.html" class="font-semibold text-indigo-700">← 목록</a>
+        <a href="/login.html" class="text-sm nav-link">로그인</a>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-4 md:p-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        <h1 class="text-2xl font-bold mb-4">새 글 작성</h1>
+        <div class="space-y-3">
+          <input v-model="title" class="w-full border rounded-xl px-3 py-2" placeholder="제목" />
+          <textarea v-model="content" rows="10" class="w-full border rounded-xl px-3 py-2" placeholder="내용"></textarea>
+          <button @click="submit" class="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">등록하기</button>
+          <p class="text-sm text-slate-600">{{ msg }}</p>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/write.js"></script>
+</body>
+</html>

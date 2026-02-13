@@ -1,0 +1,10 @@
+@host = http://localhost:8080 
+
+###/hello/json
+GET {{host}}/hello/json
+Content-Type: application/json;charset=UTF-8
+
+###/hello
+GET {{host}}/hello
+Content-Type: application/json;charset=UTF-8
+

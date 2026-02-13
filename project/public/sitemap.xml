@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>http://localhost:5173/</loc></url>
+  <url><loc>http://localhost:5173/posts</loc></url>
+  <url><loc>http://localhost:5173/login</loc></url>
+  <url><loc>http://localhost:5173/signup</loc></url>
+  <url><loc>http://localhost:5173/write</loc></url>
+  <url><loc>http://localhost:5173/me</loc></url>
+  <url><loc>http://localhost:5173/my-bookmarks</loc></url>
+  <url><loc>http://localhost:5173/my-activity</loc></url>
+  <url><loc>http://localhost:5173/my-posts</loc></url>
+  <url><loc>http://localhost:5173/terms</loc></url>
+  <url><loc>http://localhost:5173/contact</loc></url>
+</urlset>

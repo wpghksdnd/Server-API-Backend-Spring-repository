@@ -1,0 +1,18 @@
+○ openclaw-gateway.service - OpenClaw Gateway (v2026.2.9)
+     Loaded: loaded (]8;;file://ubuntu24/home/ungnam/.config/systemd/user/openclaw-gateway.service/home/ungnam/.config/systemd/user/openclaw-gateway.service]8;;; [0;1;32menabled[0m; preset: [0;1;32menabled[0m)
+     Active: inactive (dead) since Thu 2026-02-12 13:55:58 KST; 6s ago
+   Duration: 45.258s
+    Process: 3412 ExecStart=/home/ungnam/.nvm/versions/node/v24.13.1/bin/node /home/ungnam/.nvm/versions/node/v24.13.1/lib/node_modules/openclaw/dist/index.js gateway --port 18789 (code=exited, status=0/SUCCESS)
+   Main PID: 3412 (code=exited, status=0/SUCCESS)
+        CPU: 8.681s
+
+Feb 12 13:55:17 ubuntu24 node[3412]: 2026-02-12T04:55:17.668Z [gateway] listening on ws://127.0.0.1:18789 (PID 3412)
+Feb 12 13:55:17 ubuntu24 node[3412]: 2026-02-12T04:55:17.670Z [gateway] listening on ws://[::1]:18789
+Feb 12 13:55:17 ubuntu24 node[3412]: 2026-02-12T04:55:17.672Z [gateway] log file: /tmp/openclaw/openclaw-2026-02-12.log
+Feb 12 13:55:17 ubuntu24 node[3412]: 2026-02-12T04:55:17.680Z [browser/service] Browser control service ready (profiles=2)
+Feb 12 13:55:57 ubuntu24 systemd[232]: Stopping openclaw-gateway.service - OpenClaw Gateway (v2026.2.9)...
+Feb 12 13:55:57 ubuntu24 node[3412]: 2026-02-12T04:55:57.696Z [gateway] signal SIGTERM received
+Feb 12 13:55:57 ubuntu24 node[3412]: 2026-02-12T04:55:57.699Z [gateway] received SIGTERM; shutting down
+Feb 12 13:55:57 ubuntu24 node[3412]: 2026-02-12T04:55:57.711Z [gmail-watcher] gmail watcher stopped
+Feb 12 13:55:58 ubuntu24 systemd[232]: Stopped openclaw-gateway.service - OpenClaw Gateway (v2026.2.9).
+Feb 12 13:55:58 ubuntu24 systemd[232]: openclaw-gateway.service: Consumed 8.681s CPU time.

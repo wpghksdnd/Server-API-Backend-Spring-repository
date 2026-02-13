@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#312E81"/>
+      <stop offset="1" stop-color="#9333EA"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="90" y="90" width="160" height="160" rx="34" fill="rgba(255,255,255,0.16)"/>
+  <path d="M135 120H156V166L200 120H228L184 165L233 220H205L168 177L156 188V220H135V120Z" fill="white"/>
+  <text x="90" y="340" font-family="Noto Sans KR, Pretendard, Arial, sans-serif" font-size="70" fill="white" font-weight="700">Koreanit Community</text>
+  <text x="90" y="405" font-family="Noto Sans KR, Pretendard, Arial, sans-serif" font-size="34" fill="rgba(255,255,255,0.9)">Spring Boot API 기반 커뮤니티 서비스</text>
+  <text x="90" y="520" font-family="Noto Sans KR, Pretendard, Arial, sans-serif" font-size="24" fill="rgba(255,255,255,0.75)">Learn · Build · Share</text>
+</svg>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Koreanit API Test</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  </head>
+  <body class="bg-slate-100 min-h-screen">
+    <div id="app" class="max-w-3xl mx-auto p-6">
+      <div class="bg-white rounded-2xl shadow p-6 space-y-4">
+        <h1 class="text-2xl font-bold text-slate-800">Spring API 테스트 페이지</h1>
+
+        <div class="bg-slate-50 border rounded-lg p-3 text-sm">
+          <p class="text-slate-500">고정 Endpoint</p>
+          <p class="font-mono text-slate-800 break-all">{{ endpoint }}</p>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <button
+            @click="callApi"
+            :disabled="loading"
+            class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
+          >
+            {{ loading ? '요청 중...' : 'GET /api/posts 호출' }}
+          </button>
+
+          <button
+            @click="clearOutput"
+            class="px-4 py-2 rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300"
+          >
+            결과 지우기
+          </button>
+        </div>
+
+        <div>
+          <h2 class="font-semibold text-slate-700 mb-2">응답 결과</h2>
+          <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 min-h-56 overflow-auto text-sm">{{ output }}</pre>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            endpoint: 'http://localhost:8080/api/posts?page=1&limit=20',
+            loading: false,
+            output: '아직 요청하지 않았습니다.',
+          };
+        },
+        methods: {
+          async callApi() {
+            this.loading = true;
+            this.output = '요청 중...';
+
+            try {
+              const res = await fetch(this.endpoint, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+              });
+
+              const text = await res.text();
+              let data;
+
+              try {
+                data = JSON.parse(text);
+              } catch {
+                data = text;
+              }
+
+              this.output = JSON.stringify(
+                {
+                  ok: res.ok,
+                  status: res.status,
+                  statusText: res.statusText,
+                  data,
+                },
+                null,
+                2
+              );
+            } catch (e) {
+              this.output = JSON.stringify(
+                {
+                  error: true,
+                  message: e?.message || String(e),
+                },
+                null,
+                2
+              );
+            } finally {
+              this.loading = false;
+            }
+          },
+          clearOutput() {
+            this.output = '아직 요청하지 않았습니다.';
+          },
+        },
+      }).mount('#app');
+    </script>
+  </body>
+</html>

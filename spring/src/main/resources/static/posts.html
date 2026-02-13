@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>게시글 목록 | Koreanit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="/assets/css/app.css" />
+</head>
+<body class="text-slate-800">
+  <div id="app" class="min-h-screen">
+    <header class="sticky top-0 z-30 border-b border-slate-200 glass">
+      <div class="page-wrap mx-auto px-4 h-16 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <img src="/assets/logo-koreanit.svg" alt="Koreanit" class="w-9 h-9 rounded-xl" />
+          <p class="font-bold">Koreanit</p>
+        </a>
+        <nav class="hidden md:flex items-center gap-1 text-sm">
+          <a href="/" class="nav-link">홈</a>
+          <a href="/posts.html" class="nav-link active">게시글</a>
+          <a href="/write.html" class="nav-link">글쓰기</a>
+          <a href="/login.html" class="nav-link">로그인</a>
+          <a href="/me.html" class="nav-link">내 정보</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-wrap mx-auto px-4 py-8">
+      <h1 class="text-2xl font-bold mb-4">게시글 목록</h1>
+      <div class="space-y-3">
+        <article v-for="p in posts" :key="p.id" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+          <div class="flex justify-between items-start gap-4">
+            <div>
+              <h2 class="font-semibold text-lg">{{ p.title || '제목 없음' }}</h2>
+              <p class="text-xs text-slate-500 mt-1">ID {{ p.id }}</p>
+            </div>
+            <a :href="`/post.html?id=${p.id}`" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm">보기</a>
+          </div>
+          <p class="mt-2 text-slate-600 line-clamp-2">{{ p.content || '내용 없음' }}</p>
+        </article>
+      </div>
+    </main>
+  </div>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/posts.js"></script>
+</body>
+</html>

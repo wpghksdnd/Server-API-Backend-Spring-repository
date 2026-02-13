@@ -1,0 +1,51 @@
+@host = http://localhost:8080
+
+### GET health
+GET {{host}}/health
+
+### GET health/check 
+GET {{host}}/health/check?name=test&count=1
+
+
+### GET health/check 
+GET https://naver.com
+
+### GET
+GET {{host}}/test/param?msg=hello
+
+### GET PAGE
+GET {{host}}/test/page?page=2&size=5
+
+### GET PAGE DEFAULT
+GET {{host}}/test/page
+
+### GET OPTIONAL
+GET {{host}}/test/optional?keyword=hello
+
+### GET URL PATH 
+GET {{host}}/test/path/123
+
+###GET HEADER
+GET {{host}}/test/header
+
+###GET BODY
+POST {{host}}/test/body
+Content-Type: application/json
+
+{
+  "a": 1,
+  "b": "text"
+}
+
+###DTO
+POST http://localhost:8080/test/body-dto
+Content-Type: application/json
+
+{
+  "a": "hello",
+  "b": 3
+}
+
+###Json
+POST http://localhost:8080/test/body-json
+Content-Type: application/json

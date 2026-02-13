@@ -1,0 +1,218 @@
+@host = http://localhost:8080
+
+### 로그아웃(세션 삭제)
+POST {{host}}/api/logout
+
+### 회원가입 (정상)
+POST {{host}}/api/users
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "1234",
+  "nickname": "게시글작성자",
+  "email": "test@example.com"
+}
+
+### 로그인 - 세션 쿠키 발급
+POST {{host}}/api/login
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "1234"
+}
+
+### 게시글 생성
+POST {{host}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "",
+  "content": ""
+}
+
+### 게시글 단건 조회
+GET {{host}}/api/posts/131076
+
+### 게시글 목록 조회
+GET {{host}}/api/posts?page=1&limit=20
+
+### 게시글 수정
+PUT {{host}}/api/posts/13
+Content-Type: application/json
+
+{
+  "title": "수정된 제목1",
+  "content": "수정된 내용"
+}
+
+### 게시글 삭제
+DELETE {{host}}/api/posts/1314
+
+### ============ Validation 테스트 (400 에러 확인) ============
+
+### 게시글 생성 - title 빈 문자열 (400 에러)
+POST {{host}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "",
+  "content": "내용입니다"
+}
+
+### 게시글 생성 - title null (400 에러)
+POST {{host}}/api/posts
+Content-Type: application/json
+
+{
+  "content": "내용입니다"
+}
+
+### 게시글 생성 - title 공백만 (400 에러)
+POST {{host}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "   ",
+  "content": "내용입니다"
+}
+
+### 게시글 생성 - title 201자 초과 (400 에러)
+POST {{host}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901",
+  "content": "내용입니다"
+}
+
+### 게시글 생성 - content 빈 문자열 (400 에러)
+POST {{host}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "제목입니다",
+  "content": ""
+}
+
+### 게시글 생성 - content null (400 에러)
+POST {{host}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "제목입니다"
+}
+
+### 게시글 생성 - content 공백만 (400 에러)
+POST {{host}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "제목입니다",
+  "content": "   "
+}
+
+### 게시글 수정 - title 빈 문자열 (400 에러)
+PUT {{host}}/api/posts/131074
+Content-Type: application/json
+
+{
+  "title": "",
+  "content": "수정된 내용"
+}
+
+### 게시글 수정 - content 빈 문자열 (400 에러)
+PUT {{host}}/api/posts/131074
+Content-Type: application/json
+
+{
+  "title": "수정된 제목",
+  "content": ""
+}
+
+### ============ 404 에러 테스트 (존재하지 않는 리소스) ============
+
+### 존재하지 않는 게시글 조회 (404 에러)
+GET {{host}}/api/posts/999999
+
+### 존재하지 않는 게시글 수정 (404 에러)
+PUT {{host}}/api/posts/999999
+Content-Type: application/json
+
+{
+  "title": "수정된 제목",
+  "content": "수정된 내용"
+}
+
+### 존재하지 않는 게시글 삭제 (404 에러)
+DELETE {{host}}/api/posts/999999
+
+### ============ 403 에러 테스트 (인가 실패) ============
+### 설명: user1이 작성한 게시글을 user2가 수정/삭제 시도
+
+### 1) user1 회원가입
+POST {{host}}/api/users
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "1234",
+  "nickname": "유저1",
+  "email": "user1@example.com"
+}
+
+### 2) user1 로그인
+POST {{host}}/api/login
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "1234"
+}
+
+### 3) user1이 게시글 생성 (id를 기억하세요)
+POST {{host}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "user1의 게시글",
+  "content": "이 게시글은 user1이 작성했습니다"
+}
+
+### 4) 로그아웃
+POST {{host}}/api/logout
+
+### 5) user2 회원가입
+POST {{host}}/api/users
+Content-Type: application/json
+
+{
+  "username": "user2",
+  "password": "1234",
+  "nickname": "유저2",
+  "email": "user2@example.com"
+}
+
+### 6) user2 로그인
+POST {{host}}/api/login
+Content-Type: application/json
+
+{
+  "username": "user2",
+  "password": "1234"
+}
+
+### 7) user2가 user1의 게시글 수정 시도 (403 에러)
+### 위에서 생성된 게시글 ID로 변경하세요
+PUT {{host}}/api/posts/131074
+Content-Type: application/json
+
+{
+  "title": "user2가 수정하려는 제목",
+  "content": "user2가 수정하려는 내용"
+}
+
+### 8) user2가 user1의 게시글 삭제 시도 (403 에러)
+### 위에서 생성된 게시글 ID로 변경하세요
+DELETE {{host}}/api/posts/131074

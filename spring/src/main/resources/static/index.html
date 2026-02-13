@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Koreanit Community</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="/assets/css/app.css" />
+</head>
+<body class="text-slate-800">
+  <div id="app" data-page="home" class="min-h-screen">
+    <header class="sticky top-0 z-30 border-b border-slate-200 glass">
+      <div class="page-wrap mx-auto px-4 h-16 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <img src="/assets/logo-koreanit.svg" alt="Koreanit" class="w-9 h-9 rounded-xl" />
+          <div>
+            <p class="font-bold leading-tight">Koreanit Community</p>
+            <p class="text-xs text-slate-500">Learn. Build. Share.</p>
+          </div>
+        </a>
+        <nav class="hidden md:flex items-center gap-1 text-sm">
+          <a href="/" class="nav-link active">홈</a>
+          <a href="/posts.html" class="nav-link">게시글</a>
+          <a href="/write.html" class="nav-link">글쓰기</a>
+          <a href="/login.html" class="nav-link">로그인</a>
+          <a href="/me.html" class="nav-link">내 정보</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-wrap mx-auto px-4 py-8">
+      <section class="rounded-3xl p-8 md:p-10 text-white shadow-lg brand-chip">
+        <h1 class="text-3xl md:text-4xl font-bold">운영 서비스 스타일 프론트</h1>
+        <p class="mt-2 opacity-90">Spring API와 연결된 커뮤니티 홈 화면입니다.</p>
+        <div class="mt-5 flex gap-2">
+          <a href="/posts.html" class="px-4 py-2 rounded-xl bg-white text-indigo-700 font-semibold">게시글 보기</a>
+          <a href="/write.html" class="px-4 py-2 rounded-xl bg-black/20 hover:bg-black/30">글 작성</a>
+        </div>
+      </section>
+
+      <section class="mt-8">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-xl font-semibold">최신 게시글</h2>
+          <a href="/posts.html" class="text-sm text-indigo-700">전체 보기</a>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <article v-for="p in posts" :key="p.id" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+            <h3 class="font-semibold text-lg">{{ p.title || '제목 없음' }}</h3>
+            <p class="mt-2 text-slate-600 line-clamp-3">{{ p.content || '내용 없음' }}</p>
+            <a :href="`/post.html?id=${p.id}`" class="inline-block mt-3 text-sm text-indigo-700">자세히 보기 →</a>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/home.js"></script>
+</body>
+</html>
