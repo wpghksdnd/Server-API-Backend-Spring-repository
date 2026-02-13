@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.koreanit.spring.common.response.ApiResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Ops", description = "운영/헬스 체크")
 @RestController
 @RequestMapping("/api/ops")
 public class OpsController {
@@ -21,6 +25,7 @@ public class OpsController {
     this.jdbcTemplate = jdbcTemplate;
   }
 
+  @Operation(summary = "운영 헬스 체크")
   @GetMapping("/health")
   public ApiResponse<Map<String, Object>> health() {
     Map<String, Object> data = new HashMap<>();

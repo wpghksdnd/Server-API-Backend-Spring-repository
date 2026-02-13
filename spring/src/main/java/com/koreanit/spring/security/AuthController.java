@@ -15,9 +15,12 @@ import com.koreanit.spring.user.dto.response.UserResponse;
 import com.koreanit.spring.common.error.ApiException;
 import com.koreanit.spring.common.error.ErrorCode;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
+@Tag(name = "Auth", description = "로그인/로그아웃/내 정보")
 @RestController
 @RequestMapping("/api")
 public class AuthController {
@@ -30,6 +33,7 @@ public class AuthController {
         this.userService = userService;
     }
 
+    @Operation(summary = "로그인")
     @PostMapping("/login")
     public ApiResponse<Long> login(@Valid @RequestBody UserLoginRequest req, HttpSession session) {
       Long userId = userService.login(req.getUsername(), req.getPassword());
@@ -37,12 +41,14 @@ public class AuthController {
       return ApiResponse.ok(userId);
     }
 
+    @Operation(summary = "로그아웃")
     @PostMapping("/logout")
     public ApiResponse<Void> logout(HttpSession session) {
         session.invalidate();
         return ApiResponse.ok();
     }
 
+    @Operation(summary = "내 정보 조회")
     @GetMapping("/me")
     public ApiResponse<UserResponse> me(HttpSession session) {
         Long userId = (Long) session.getAttribute(SESSION_USER_ID);

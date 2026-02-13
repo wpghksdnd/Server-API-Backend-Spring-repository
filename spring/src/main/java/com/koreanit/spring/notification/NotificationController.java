@@ -17,6 +17,10 @@ import com.koreanit.spring.notification.dto.MarkReadRequest;
 import com.koreanit.spring.notification.dto.UnreadCountResponse;
 import com.koreanit.spring.security.SecurityUtils;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Notifications", description = "댓글 알림")
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationController {
@@ -33,16 +37,19 @@ public class NotificationController {
     return id;
   }
 
+  @Operation(summary = "댓글 알림 목록")
   @GetMapping("/comments")
   public ApiResponse<List<CommentNotificationResponse>> comments(@RequestParam(defaultValue = "20") int limit) {
     return ApiResponse.ok(notificationService.comments(requiredUserId(), limit));
   }
 
+  @Operation(summary = "댓글 알림 미읽음 개수")
   @GetMapping("/comments/unread-count")
   public ApiResponse<UnreadCountResponse> unreadCount() {
     return ApiResponse.ok(notificationService.unreadCount(requiredUserId()));
   }
 
+  @Operation(summary = "댓글 알림 읽음 처리")
   @PostMapping("/comments/mark-read")
   public ApiResponse<Void> markRead(@RequestBody(required = false) MarkReadRequest req) {
     notificationService.markRead(requiredUserId(), req == null ? null : req.getLastSeenCommentId());

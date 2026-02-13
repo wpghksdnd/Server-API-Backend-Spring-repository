@@ -18,8 +18,11 @@ import com.koreanit.spring.post.dto.request.PostUpdateRequest;
 import com.koreanit.spring.post.dto.response.PostResponse;
 import com.koreanit.spring.security.SecurityUtils;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@Tag(name = "Posts", description = "게시글 CRUD")
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -30,6 +33,7 @@ public class PostController {
       this.postService = postService;
   }
 
+  @Operation(summary = "게시글 작성")
   @PostMapping
   public ApiResponse<PostResponse> create(@RequestBody @Valid PostCreateRequest req) {
       Long userId = SecurityUtils.currentUserId();
@@ -37,6 +41,7 @@ public class PostController {
       return ApiResponse.ok(PostMapper.toResponse(p));
   }
 
+  @Operation(summary = "게시글 목록 조회")
   @GetMapping
   public ApiResponse<List<PostResponse>> list(
       @RequestParam(defaultValue = "1") int page,
@@ -45,18 +50,21 @@ public class PostController {
     return ApiResponse.ok(PostMapper.toResponseList(posts));
   }
 
+  @Operation(summary = "게시글 상세 조회")
   @GetMapping("/{id}")
   public ApiResponse<PostResponse> get(@PathVariable long id) {
       Post p = postService.get(id);
       return ApiResponse.ok(PostMapper.toResponse(p));
   }
 
+  @Operation(summary = "게시글 수정")
   @PutMapping("/{id}")
   public ApiResponse<PostResponse> update(@PathVariable long id, @RequestBody @Valid PostUpdateRequest req) {
       Post p = postService.update(id, req.getTitle(), req.getContent());
       return ApiResponse.ok(PostMapper.toResponse(p));
   }
 
+  @Operation(summary = "게시글 삭제")
   @DeleteMapping("/{id}")
   public ApiResponse<Void> delete(@PathVariable long id) {
       postService.delete(id);

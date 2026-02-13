@@ -31,6 +31,9 @@ dependencies {
 
 	// Redis 연결 및 직렬화 처리를 위한 Spring Boot Redis 스타터
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// Swagger/OpenAPI 문서화
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 }
 
 tasks.named('test') {

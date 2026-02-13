@@ -18,8 +18,11 @@ import com.koreanit.spring.common.error.ErrorCode;
 import com.koreanit.spring.common.response.ApiResponse;
 import com.koreanit.spring.security.SecurityUtils;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@Tag(name = "Comments", description = "댓글/대댓글")
 @RestController
 @RequestMapping("/api")
 public class CommentController {
@@ -38,6 +41,7 @@ public class CommentController {
     return userId;
   }
 
+  @Operation(summary = "댓글/대댓글 작성")
   @PostMapping("/posts/{postId}/comments")
   public ApiResponse<CommentResponse> create(
       @PathVariable long postId,
@@ -46,6 +50,7 @@ public class CommentController {
     return ApiResponse.ok(CommentMapper.toResponse(created));
   }
 
+  @Operation(summary = "게시글 댓글 목록 조회")
   @GetMapping("/posts/{postId}/comments")
   public ApiResponse<List<CommentResponse>> list(
       @PathVariable long postId,
@@ -55,12 +60,14 @@ public class CommentController {
         CommentMapper.toResponseList(commentService.list(postId, before, limit)));
   }
 
+  @Operation(summary = "내 댓글 목록 조회")
   @GetMapping("/comments/me")
   public ApiResponse<List<CommentResponse>> myComments(
       @RequestParam(defaultValue = "20") int limit) {
     return ApiResponse.ok(CommentMapper.toResponseList(commentService.listMine(requiredUserId(), limit)));
   }
 
+  @Operation(summary = "댓글 삭제")
   @DeleteMapping("/comments/{id}")
   public ApiResponse<Void> delete(@PathVariable long id) {
     commentService.delete(id);
